@@ -21,6 +21,7 @@ public class AssessAreaService {
     private final UserRepository userRepository;
     private final AssessAreaRepository assessAreaRepository;
     private final AreaRepository areaRepository;
+    List<AssessmentAreas> userAssessmentAreas = new ArrayList<>();
 
     public AssessAreaService(UserRepository userRepository, AssessAreaRepository assessAreaRepository, AreaRepository areaRepository) {
         this.userRepository = userRepository;
@@ -85,22 +86,22 @@ public class AssessAreaService {
      */
     public UserAssessResponse getAllUserAreas(int userId) {
         System.out.println("----- getAllUserAreas function is starting -----");
-        List<AssessmentAreas> userAssessmentAreas = new ArrayList<>();
         List<AssessmentPayload> assessmentPayload = new ArrayList<>();
         List<AssessmentAreas> assessmentAreas = null;
         UserAssessResponse userAssessResponse = new UserAssessResponse();
+        userAssessmentAreas.clear();
 
         try {
-            // get assessments of the given user
+            // get the latest assessment of the given user
             // Spring boot query always return values in Ascending order
-            // so, we get the last assessment id in the list
-            System.out.println("Checking whether any areas available for the user");
+            // so, this function gets the last assessment id in the list (latest)
+            System.out.println("Checking whether any assessments available for the user");
             assessmentAreas = assessAreaRepository.findAllByUserId(userId);
 
-
             if (assessmentAreas != null) {
-                System.out.println("" + assessmentAreas.size() + " areas available for the user ID: " + userId);
+                System.out.println("Total areas: " + assessmentAreas.size() + " available for the user: " + userId);
                 int maxAssessmentId = assessmentAreas.get(assessmentAreas.size()-1).getAssessmentId();
+                System.out.println("maxAssessmentId: " + maxAssessmentId);
 
                 // filter out latest user assessment areas to an array
                 for (int i=0 ; i<assessmentAreas.size() ; i++) {
@@ -109,13 +110,16 @@ public class AssessAreaService {
                     }
                 }
 
+                System.out.println("Total selected areas: " + userAssessmentAreas.size() + " available for the user: " + userId);
+
                 // collect areas from the database by filtered out assessment data
                 for (int j=0 ; j<userAssessmentAreas.size() ; j++) {
                     AssessmentPayload payload = new AssessmentPayload();
                     Areas dbArea = areaRepository.findByAreaId(userAssessmentAreas.get(j).getAreaId());
                     payload.setAreaId(dbArea.getAreaId());
                     payload.setAreaDescription(dbArea.getAreaDescription());
-                    payload.setAreaPercentage(userAssessmentAreas.get(j).getAssessAreaPercentage());
+                    payload.setAreaCurrent(userAssessmentAreas.get(j).getAssessAreaCurrent());
+                    payload.setAreaFuture(userAssessmentAreas.get(j).getAssessAreaFuture());
                     payload.setAreaStatus(userAssessmentAreas.get(j).isAreaStatus());
                     assessmentPayload.add(payload);
                 }
@@ -145,5 +149,65 @@ public class AssessAreaService {
         }
 
         return userAssessResponse;
+    }
+
+
+    public GeneralResponse updateUserAreas(UserAssessResponse userAssessResponse) {
+        System.out.println("----- updateUserAreas function is starting -----");
+        List<AssessmentPayload> payloadsFromFrontEnd = new ArrayList<>();
+
+        if (userAssessmentAreas.size() != 0) {
+            try {
+                // get payload data from which is coming from the front end and
+                // set it to the payloadsFromFrontEnd object
+                payloadsFromFrontEnd = userAssessResponse.getAssessmentPayloads();
+
+                for (int i = 0; i < payloadsFromFrontEnd.size(); i++) {
+
+                    // bind data into the updateArea object
+                    AssessmentAreas updateArea = getAssessmentAreas(i, payloadsFromFrontEnd);
+
+                    System.out.println("userAssessmentAreas.get(i).getAssessmentId(): " + userAssessmentAreas.get(i).getAssessAreaId());
+                    System.out.println("----------");
+
+                    // send object to the database
+                    // details will be updated since object already existing in the database (override new values)
+                    assessAreaRepository.save(updateArea);
+                }
+
+                System.out.println("" + payloadsFromFrontEnd.size() + " areas updated successfully");
+
+                generalResponse.setResponseCode(200);
+                generalResponse.setResponseDescription("Areas updated successfully");
+            } catch (Exception ex) {
+                System.out.println("Failed to update user areas");
+                System.out.println(ex.getCause());
+                ex.printStackTrace();
+                generalResponse.setResponseCode(400);
+                generalResponse.setResponseDescription("Cannot update at the moment");
+            }
+        }
+        else {
+            System.out.println("User areas not retrieved yet!");
+            generalResponse.setResponseCode(400);
+            generalResponse.setResponseDescription("User areas not retrieved yet!");
+        }
+        return generalResponse;
+    }
+
+    /**
+     * function to update the Current and the Future values in the user areas
+     */
+    private AssessmentAreas getAssessmentAreas(int i, List<AssessmentPayload> payloadsFromFrontEnd) {
+        AssessmentAreas updateArea = new AssessmentAreas();
+        updateArea.setAssessAreaId(userAssessmentAreas.get(i).getAssessAreaId());
+        updateArea.setUserId(userAssessmentAreas.get(i).getUserId());
+        updateArea.setAreaId(userAssessmentAreas.get(i).getAreaId());
+        updateArea.setAssessmentId(userAssessmentAreas.get(i).getAssessmentId());
+        updateArea.setAssessAreaCurrent(payloadsFromFrontEnd.get(i).getAreaCurrent());
+        updateArea.setAssessAreaFuture(payloadsFromFrontEnd.get(i).getAreaFuture());
+        updateArea.setAreaStatus(userAssessmentAreas.get(i).isAreaStatus());
+        updateArea.setAssessAreaCreatedDate(userAssessmentAreas.get(i).getAssessAreaCreatedDate());
+        return updateArea;
     }
 }

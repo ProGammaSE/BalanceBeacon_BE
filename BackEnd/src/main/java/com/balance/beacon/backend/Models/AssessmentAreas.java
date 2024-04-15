@@ -21,8 +21,11 @@ public class AssessmentAreas {
     @Column(name = "assessment_id")
     int assessmentId;
 
-    @Column(name = "assess_area_percentage")
-    int assessAreaPercentage;
+    @Column(name = "assess_area_current")
+    int assessAreaCurrent;
+
+    @Column(name = "assess_area_future")
+    int assessAreaFuture;
 
     @Column(name = "area_status")
     boolean areaStatus;
@@ -62,12 +65,20 @@ public class AssessmentAreas {
         this.assessmentId = assessmentId;
     }
 
-    public int getAssessAreaPercentage() {
-        return assessAreaPercentage;
+    public int getAssessAreaCurrent() {
+        return assessAreaCurrent;
     }
 
-    public void setAssessAreaPercentage(int assessAreaPercentage) {
-        this.assessAreaPercentage = assessAreaPercentage;
+    public void setAssessAreaCurrent(int assessAreaCurrent) {
+        this.assessAreaCurrent = assessAreaCurrent;
+    }
+
+    public int getAssessAreaFuture() {
+        return assessAreaFuture;
+    }
+
+    public void setAssessAreaFuture(int assessAreaFuture) {
+        this.assessAreaFuture = assessAreaFuture;
     }
 
     public boolean isAreaStatus() {

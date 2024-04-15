@@ -22,4 +22,9 @@ public class AssessAreaController {
     public UserAssessResponse getAllUserAreas(@PathVariable int userId) {
         return assessAreaService.getAllUserAreas(userId);
     }
+
+    @PutMapping(value = "/assess/user/areas/update")
+    public GeneralResponse updateUserAreas(@RequestBody UserAssessResponse userAssessResponse) {
+        return assessAreaService.updateUserAreas(userAssessResponse);
+    }
 }
