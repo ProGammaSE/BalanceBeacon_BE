@@ -72,7 +72,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userEmail\": \"test\",\r\n    \"userPassword\": \"test\"\r\n}",
+							"raw": "{\r\n    \"userEmail\": \"zink@mail.com\",\r\n    \"userPassword\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -240,6 +240,40 @@
 								"areas",
 								"all",
 								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Areas",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"responseCode\": 200,\r\n    \"responseDescription\": \"Areas loaded successfully\",\r\n    \"userId\": 11,\r\n    \"assessmentId\": 15,\r\n    \"assessmentPayloads\": [\r\n        {\r\n            \"areaId\": 5,\r\n            \"areaDescription\": \"Hobbies. Fun\",\r\n            \"areaCurrent\": 2,\r\n            \"areaFuture\": 8,\r\n            \"areaStatus\": true\r\n        },\r\n        {\r\n            \"areaId\": 6,\r\n            \"areaDescription\": \"Money\",\r\n            \"areaCurrent\": 2,\r\n            \"areaFuture\": 10,\r\n            \"areaStatus\": true\r\n        },\r\n        {\r\n            \"areaId\": 8,\r\n            \"areaDescription\": \"Health & Fitness\",\r\n            \"areaCurrent\": 10,\r\n            \"areaFuture\": 10,\r\n            \"areaStatus\": true\r\n        },\r\n        {\r\n            \"areaId\": 9,\r\n            \"areaDescription\": \"Time Manage\",\r\n            \"areaCurrent\": 5,\r\n            \"areaFuture\": 9,\r\n            \"areaStatus\": true\r\n        },\r\n        {\r\n            \"areaId\": 11,\r\n            \"areaDescription\": \"Recreation\",\r\n            \"areaCurrent\": 7,\r\n            \"areaFuture\": 5,\r\n            \"areaStatus\": true\r\n        },\r\n        {\r\n            \"areaId\": 12,\r\n            \"areaDescription\": \"Sex & Romance\",\r\n            \"areaCurrent\": 1,\r\n            \"areaFuture\": 9,\r\n            \"areaStatus\": true\r\n        },\r\n        {\r\n            \"areaId\": 13,\r\n            \"areaDescription\": \"Spirituality\",\r\n            \"areaCurrent\": 4,\r\n            \"areaFuture\": 5,\r\n            \"areaStatus\": true\r\n        },\r\n        {\r\n            \"areaId\": 14,\r\n            \"areaDescription\": \"Personal Growth\",\r\n            \"areaCurrent\": 1,\r\n            \"areaFuture\": 10,\r\n            \"areaStatus\": true\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/assess/user/areas/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"assess",
+								"user",
+								"areas",
+								"update"
 							]
 						}
 					},
