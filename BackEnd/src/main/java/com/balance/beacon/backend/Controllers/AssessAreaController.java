@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AssessAreaController {
 
-    private AssessAreaService assessAreaService;
+    private final AssessAreaService assessAreaService;
 
     public AssessAreaController(AssessAreaService assessAreaService) {
         this.assessAreaService = assessAreaService;

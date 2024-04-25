@@ -1,5 +1,6 @@
 package com.balance.beacon.backend.Services;
 
+import com.balance.beacon.backend.Models.GeneralResponse;
 import com.balance.beacon.backend.Models.Login;
 import com.balance.beacon.backend.Models.UserResponse;
 import com.balance.beacon.backend.Models.Users;
@@ -137,5 +138,26 @@ public class UserService {
             loginEx.printStackTrace();
         }
         return userResponse;
+    }
+
+    public GeneralResponse updateUserStatus(int userId, int status) {
+        Users dbUser = new Users();
+        GeneralResponse response = new GeneralResponse();
+
+        if (userId != 0 && status != 0) {
+            dbUser = userRepository.findByUserId(userId);
+
+            if (dbUser != null) {
+                dbUser.setUserStatus(status);
+                userRepository.save(dbUser);
+                response.setResponseCode(200);
+                response.setResponseDescription("User successfully updated");
+            }
+            else {
+                response.setResponseCode(400);
+                response.setResponseDescription("User updating failed!");
+            }
+        }
+        return response;
     }
 }

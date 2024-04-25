@@ -31,7 +31,7 @@ public class Users {
     private String userPassword;
 
     @Column(name = "user_status")
-    private boolean userStatus;
+    private int userStatus;
 
     @Column(name = "user_created_date")
     private Date userCreatedDate;
@@ -92,11 +92,11 @@ public class Users {
         this.userPassword = userPassword;
     }
 
-    public boolean isUserStatus() {
+    public int getUserStatus() {
         return userStatus;
     }
 
-    public void setUserStatus(boolean userStatus) {
+    public void setUserStatus(int userStatus) {
         this.userStatus = userStatus;
     }
 

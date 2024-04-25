@@ -21,14 +21,23 @@ public class AssessAreaService {
     private final UserRepository userRepository;
     private final AssessAreaRepository assessAreaRepository;
     private final AreaRepository areaRepository;
+    private final TipService tipService;
+    private final UserTipService userTipService;
+    private final UserService userService;
     List<AssessmentAreas> userAssessmentAreas = new ArrayList<>();
 
-    public AssessAreaService(UserRepository userRepository, AssessAreaRepository assessAreaRepository, AreaRepository areaRepository) {
+    public AssessAreaService(UserRepository userRepository, AssessAreaRepository assessAreaRepository, AreaRepository areaRepository, TipService tipService, UserTipService userTipService, UserService userService) {
         this.userRepository = userRepository;
         this.assessAreaRepository = assessAreaRepository;
         this.areaRepository = areaRepository;
+        this.tipService = tipService;
+        this.userTipService = userTipService;
+        this.userService = userService;
     }
 
+    /**
+     * function to add user selected areas into the database
+     */
     public GeneralResponse addUserAreas(AssessAreaRequest assessAreaRequest) {
         System.out.println("----- addUserAreas is starting -----");
         // check whether the user is available in the database
@@ -58,6 +67,21 @@ public class AssessAreaService {
                     System.out.println("All areas added to the user successfully");
                     generalResponse.setResponseCode(200);
                     generalResponse.setResponseDescription("Areas added successfully");
+
+                    System.out.println("Calling the getAllTips function to retrieve all tips belongs to the selected areas");
+                    TipResponse tipResponse = tipService.getAllTips(assessAreaRequest.getUserId(), assessAreaRequest.getUserChosenAreas(), currentMaxAssessId+1);
+
+                    if (tipResponse.getResponseStatus() == 200) {
+                        System.out.println("Calling addUserTips function to add retrieve tips to the user-tips table");
+                        generalResponse = userTipService.addUserTips(tipResponse, 0);
+                    }
+                    else {
+                        generalResponse.setResponseCode(400);
+                        generalResponse.setResponseDescription("getAllTips function failed");
+                    }
+
+                    System.out.println("Updating the user status");
+                    userService.updateUserStatus(assessAreaRequest.getUserId(), 2);
                 }
                 else {
                     System.out.println("User not found in the database");
