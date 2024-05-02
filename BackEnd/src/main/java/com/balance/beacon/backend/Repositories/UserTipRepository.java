@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface UserTipRepository extends JpaRepository<UserTips, Integer> {
     List<UserTips> findByUserIdAndAssessmentIdAndTipStatus(int userId, int assessmentId, int status);
+    UserTips findByUserTipId(int userTipId);
 }

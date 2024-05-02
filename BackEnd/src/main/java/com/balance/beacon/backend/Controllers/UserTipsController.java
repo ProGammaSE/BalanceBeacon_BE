@@ -1,11 +1,12 @@
 package com.balance.beacon.backend.Controllers;
 
+import com.balance.beacon.backend.Models.GeneralResponse;
 import com.balance.beacon.backend.Models.TipResponse;
+import com.balance.beacon.backend.Models.UpdateUserTips;
 import com.balance.beacon.backend.Models.UserTips;
 import com.balance.beacon.backend.Services.UserTipService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +22,10 @@ public class UserTipsController {
     @GetMapping(value = "/user/tips/{userId}/{assessmentId}/{status}")
     private List<UserTips> getAllUserTips(@PathVariable int userId, @PathVariable int assessmentId, @PathVariable int status) {
         return userTipService.getAllUserTips(userId, assessmentId, status);
+    }
+
+    @PostMapping(value = "/user/tips/update")
+    public GeneralResponse updateUserTips(@RequestBody UpdateUserTips updateUserTips) {
+        return userTipService.updateUserTips(updateUserTips);
     }
 }

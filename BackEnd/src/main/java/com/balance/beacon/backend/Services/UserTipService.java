@@ -1,8 +1,6 @@
 package com.balance.beacon.backend.Services;
 
-import com.balance.beacon.backend.Models.GeneralResponse;
-import com.balance.beacon.backend.Models.TipResponse;
-import com.balance.beacon.backend.Models.UserTips;
+import com.balance.beacon.backend.Models.*;
 import com.balance.beacon.backend.Repositories.UserTipRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +13,11 @@ import java.util.List;
 public class UserTipService {
 
     private final UserTipRepository userTipRepository;
+    private final GoalService goalService;
 
-    public UserTipService(UserTipRepository userTipRepository) {
+    public UserTipService(UserTipRepository userTipRepository, GoalService goalService) {
         this.userTipRepository = userTipRepository;
+        this.goalService = goalService;
     }
 
     /**
@@ -81,5 +81,47 @@ public class UserTipService {
         }
 
         return userTips;
+    }
+
+    /**
+     * function to update user tips. below are the updating scenarios
+     * status: 0 = tip is active
+     * status: 1 = a goal is set
+     * status: 2 = completed
+     * status: 3 = tip is inactive
+     */
+    public GeneralResponse updateUserTips(UpdateUserTips updateUserTips) {
+        System.out.println("----- updateUserTips function is starting -----");
+        GeneralResponse generalResponse = new GeneralResponse();
+
+        if (updateUserTips != null) {
+            try {
+                System.out.println("Tip loaded for updating the status");
+                UserTips dbUserTips = userTipRepository.findByUserTipId(updateUserTips.getUserTipId());
+
+                dbUserTips.setTipStatus(updateUserTips.getTipStatus());
+                userTipRepository.save(dbUserTips);
+                System.out.println("Tip updated successfully");
+
+                generalResponse.setResponseCode(200);
+                generalResponse.setResponseDescription("Tip updated successfully");
+
+                // adding a new goal to the goals table
+                System.out.println("Starting to add the goal details to the database");
+                goalService.addNewGoal(updateUserTips);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("Tip updating failed");
+                generalResponse.setResponseCode(400);
+                generalResponse.setResponseDescription("Tip updating failed");
+            }
+        }
+        else {
+            System.out.println("Update data not received to the backend");
+            generalResponse.setResponseCode(200);
+            generalResponse.setResponseDescription("No update data provided");
+        }
+        return generalResponse;
     }
 }
