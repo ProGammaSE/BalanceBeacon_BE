@@ -35,6 +35,7 @@ public class GoalService {
 
                 if (dbGoals == null) {
                     System.out.println("Goal is not set, therefore adding a new one");
+                    goals.setUserId(updateUserTips.getUserId());
                     goals.setGoalDays(updateUserTips.getGoalDays());
                     goals.setUserTipId(updateUserTips.getUserTipId());
                     goals.setAreaDescription(updateUserTips.getAreaDescription());
@@ -69,11 +70,11 @@ public class GoalService {
     /**
      * get all user goals
      */
-    public List<Goals> getAllGoals() {
+    public List<Goals> getAllGoals(int userId) {
         System.out.println("----- getAllGoals function is calling -----");
         List<Goals> goals = new ArrayList<Goals>();
         try {
-            goals = goalRepository.findAll();
+            goals = goalRepository.findAllByUserId(userId);
             System.out.println("Goal list returned successfully");
         } catch (Exception e) {
             e.printStackTrace();

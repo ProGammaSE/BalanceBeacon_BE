@@ -11,6 +11,9 @@ public class Goals {
     @Column(name = "goal_id")
     private int goalId;
 
+    @Column(name = "user_id")
+    private int userId;
+
     @Column(name = "user_tip_id")
     private int userTipId;
 
@@ -25,6 +28,14 @@ public class Goals {
 
     @Column(name = "goal_days")
     private String goalDays;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     public int getGoalId() {
         return goalId;

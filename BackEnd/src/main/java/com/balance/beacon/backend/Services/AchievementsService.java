@@ -3,8 +3,10 @@ package com.balance.beacon.backend.Services;
 import com.balance.beacon.backend.Models.Achievements;
 import com.balance.beacon.backend.Models.AssessmentAreas;
 import com.balance.beacon.backend.Models.Goals;
+import com.balance.beacon.backend.Models.UserAssessResponse;
 import com.balance.beacon.backend.Repositories.AssessAreaRepository;
 import com.balance.beacon.backend.Repositories.GoalRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,13 +15,15 @@ import java.util.List;
 @Service
 public class AchievementsService {
 
-    private final AssessAreaRepository assessAreaRepository;
-    private final GoalRepository goalRepository;
+    @Autowired
+    AssessAreaRepository assessAreaRepository;
 
-    public AchievementsService(AssessAreaRepository assessAreaRepository, GoalRepository goalRepository) {
-        this.assessAreaRepository = assessAreaRepository;
-        this.goalRepository = goalRepository;
-    }
+//    @Autowired
+//    GoalRepository goalRepository;
+    @Autowired
+    private AssessAreaService assessAreaService;
+    @Autowired
+    private GoalService goalService;
 
     public Achievements getAchievements(int userId) {
         System.out.println("----- getAchievements function is calling -----");
@@ -30,6 +34,8 @@ public class AchievementsService {
 
         try {
             // getting number of achievements that user has findTopByOrderByAssessmentIdDesc findByUserIdAndAssessmentIdAndTipStatus
+            UserAssessResponse userAssessResponse = new UserAssessResponse();
+//            userAssessResponse = assessAreaService.getAllUserAreas(userId);
             assessmentAreas = assessAreaRepository.findAllByUserId(userId);
 
             // get assessmentCount for the user
@@ -39,7 +45,8 @@ public class AchievementsService {
             System.out.println("Assessment count received: " + assessmentAreas.size());
 
             // check created goal count
-            goals = goalRepository.findAll();
+            goals = goalService.getAllGoals(userId);
+//            goals = goalRepository.findAll();
 
             if (goals.size() > 0) {
                 achievements.setGoalCount(goals.size());
